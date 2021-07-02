@@ -14,7 +14,7 @@ class ItemListTile extends StatelessWidget {
       elevation: item.marcado ? 0 : 1,
       child: ListTile(
         leading: IconButton(
-          onPressed: onCheck(item),
+          onPressed: () => onCheck(item),
           icon: item.marcado
               ? Icon(
                   Icons.check,

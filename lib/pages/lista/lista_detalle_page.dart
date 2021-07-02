@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:listas/controller/listas_controller.dart';
 import 'package:listas/main.dart';
 import 'package:listas/models.dart';
 import 'package:listas/pages/item/item_add_page.dart';
@@ -25,11 +26,9 @@ class ListaDetallePage extends StatefulWidget {
 class _ListaDetallePageState extends State<ListaDetallePage> {
   void onCheck(Item item) {
     String lista_id = Get.parameters['id']!;
-    final provider = Provider.of<ListasProvider>(context, listen: false);
-    // setState(() {
-    //   Lista lista = provider.getLista(lista_id);
-    //   lista.marcarItem(item);
-    // });
+    setState(() {
+      ListaController.to.marcarItemLista(lista_id, item);
+    });
   }
 
   @override

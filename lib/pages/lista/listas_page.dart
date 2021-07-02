@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:listas/controller/listas_controller.dart';
 import 'package:listas/main.dart';
 import 'package:listas/models.dart';
 import 'package:listas/pages/lista/lista_detalle_page.dart';
@@ -14,18 +15,18 @@ class ListasPage extends StatefulWidget {
 class _ListasPageState extends State<ListasPage> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ListasProvider>(context);
-    final listas = provider.listas;
-
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var lista in listas)
-            ListItem(
-              lista_id: lista.id,
-            ),
-        ],
+    return GetBuilder<ListaController>(
+      init: ListaController(),
+      builder: (_) => SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var lista in _.listas)
+              ListItem(
+                lista_id: lista.id,
+              ),
+          ],
+        ),
       ),
     );
   }
