@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/main.dart';
 import 'package:listas/models.dart';
 import 'package:listas/pages/lista/lista_detalle_page.dart';
@@ -127,11 +128,14 @@ class ListItem extends StatelessWidget {
               : SizedBox(),
         ),
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            ListaDetallePage.routeName,
-            arguments: ScreenListaArguments(lista_id, tag),
-          );
+          //print(lista_id);
+          print("Lista detalle : $lista_id");
+          Get.toNamed("/lista/detalle/$lista_id");
+          // Navigator.pushNamed(
+          //   context,
+          //   ListaDetallePage.routeName,
+          //   arguments: ScreenListaArguments(lista_id, tag),
+          // );
         },
         // subtitle: Text('Participantes'),
       ),

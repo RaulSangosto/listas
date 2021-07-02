@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/main.dart';
 import 'package:listas/models.dart';
 import 'package:listas/provider/listas.dart';
@@ -6,8 +7,6 @@ import 'package:listas/widgets/articulos.dart';
 import 'package:provider/provider.dart';
 
 class ItemAddPage extends StatefulWidget {
-  static const routeName = '/item/add';
-
   ItemAddPage({Key? key}) : super(key: key);
 
   @override
@@ -17,10 +16,9 @@ class ItemAddPage extends StatefulWidget {
 class _ItemAddPageState extends State<ItemAddPage> {
   void onAddItem(Articulo articulo) {
     setState(() {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as ScreenListaArguments;
+      final String lista_id = Get.parameters["id"]!;
       final provider = Provider.of<ListasProvider>(context, listen: false);
-      Lista lista = provider.getLista(args.lista_id);
+      Lista lista = provider.getLista(lista_id);
 
       if (lista.hasItemArticulo(articulo)) {
         lista.increaseItem(articulo);
@@ -38,20 +36,18 @@ class _ItemAddPageState extends State<ItemAddPage> {
 
   void onRemoveItem(Articulo articulo) {
     setState(() {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as ScreenListaArguments;
+      final String lista_id = Get.parameters["id"]!;
       final provider = Provider.of<ListasProvider>(context, listen: false);
-      Lista lista = provider.getLista(args.lista_id);
+      Lista lista = provider.getLista(lista_id);
       lista.decreaseItem(articulo);
     });
   }
 
   int getCantidadArticulo(Articulo articulo) {
     int cantidad = 0;
-    final args =
-        ModalRoute.of(context)!.settings.arguments as ScreenListaArguments;
+    final String lista_id = Get.parameters["id"]!;
     final provider = Provider.of<ListasProvider>(context, listen: false);
-    Lista lista = provider.getLista(args.lista_id);
+    Lista lista = provider.getLista(lista_id);
 
     if (lista.hasItemArticulo(articulo)) {
       cantidad = lista.getItemArticulo(articulo).cantidad;
@@ -61,21 +57,18 @@ class _ItemAddPageState extends State<ItemAddPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as ScreenListaArguments;
-
     final provider = Provider.of<ListasProvider>(context);
     final articulos = provider.articulos;
 
     return Hero(
-      tag: args.tag,
+      tag: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Añadir Item'),
           leading: IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          ),
+              icon: Icon(Icons.close),
+              onPressed: () => Get.back() //Navigator.pop(context),
+              ),
           elevation: 0,
           backgroundColor: Colors.blue,
         ),

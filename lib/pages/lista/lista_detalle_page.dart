@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/main.dart';
 import 'package:listas/models.dart';
 import 'package:listas/pages/item/item_add_page.dart';
@@ -17,38 +18,35 @@ import 'package:provider/provider.dart';
 // }
 
 class ListaDetallePage extends StatefulWidget {
-  static const routeName = '/lista/dettalle';
-
   @override
   State<ListaDetallePage> createState() => _ListaDetallePageState();
 }
 
 class _ListaDetallePageState extends State<ListaDetallePage> {
   void onCheck(Item item) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as ScreenListaArguments;
+    String lista_id = Get.parameters['id']!;
     final provider = Provider.of<ListasProvider>(context, listen: false);
-    setState(() {
-      Lista lista = provider.getLista(args.lista_id);
-      lista.marcarItem(item);
-    });
+    // setState(() {
+    //   Lista lista = provider.getLista(lista_id);
+    //   lista.marcarItem(item);
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as ScreenListaArguments;
+    final String lista_id = Get.parameters["id"]!;
 
     return Scaffold(
-      body: Body(lista_id: args.lista_id, onCheck: onCheck),
+      body: Body(lista_id: lista_id, onCheck: onCheck),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          Navigator.pushNamed(context, ItemAddPage.routeName,
-              arguments: ScreenListaArguments(args.lista_id, args.tag));
+          Get.toNamed("/lista/$lista_id/add-item");
+          // Navigator.pushNamed(context, ItemAddPage.routeName,
+          //     arguments: ScreenListaArguments(args.lista_id, args.tag));
         },
         child: Icon(Icons.add),
-        heroTag: args.tag,
+        heroTag: 1,
       ),
     );
   }

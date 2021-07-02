@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/main.dart';
 import 'package:listas/models.dart';
 import 'package:listas/provider/listas.dart';
@@ -55,7 +56,7 @@ class _ListaAddPageState extends State<ListaAddPage> {
       return;
     } else {
       final lista = Lista(
-        id: DateTime.now().toString(),
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
         nombre: nombre,
         autor: new User(nombre: 'raul'),
         items: [],
@@ -70,11 +71,12 @@ class _ListaAddPageState extends State<ListaAddPage> {
       //         builder: (context) =>
       //             ListaDetallePage(lista: lista, tag: widget.tag)));
       // Navigator.pop(context);
-      Navigator.popAndPushNamed(
-        context,
-        ListaDetallePage.routeName,
-        arguments: ScreenListaArguments(lista.id, widget.tag),
-      );
+      // Navigator.popAndPushNamed(
+      //   context,
+      //   ListaDetallePage.routeName,
+      //   arguments: ScreenListaArguments(lista.id, widget.tag),
+      // );
+      Get.offNamed("/lista/detalle/${lista.id}");
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/main.dart';
 import 'package:listas/pages/item/item_add_page.dart';
 import 'package:listas/pages/lista/listas_page.dart';
@@ -55,7 +56,8 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          Navigator.pushNamed(context, "/lista/add");
+          Get.toNamed("/lista/add");
+          // Navigator.pushNamed(context, "/lista/add");
         },
         child: Icon(Icons.add),
         heroTag: tag,

@@ -35,6 +35,7 @@ dependencies:
   flutter_slidable: ^0.5.7
 
   # state management
+  get: ^4.1.4
   provider: ^4.3.2+2
 
 dev_dependencies:

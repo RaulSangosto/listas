@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/pages/home/home_page.dart';
 import 'package:listas/pages/item/item_add_page.dart';
 import 'package:listas/pages/lista/lista_add_page.dart';
 import 'package:listas/pages/lista/lista_detalle_page.dart';
+import 'package:listas/pages/unknown.dart';
 import 'package:listas/provider/listas.dart';
 import 'package:provider/provider.dart';
 
@@ -31,37 +33,39 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => ListasProvider(),
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: title,
-          theme: ThemeData(
-            primarySwatch: Colors.green,
-            scaffoldBackgroundColor: Color(0xFFf6f5ee),
-          ),
-          routes: <String, WidgetBuilder>{
-            '/home': (BuildContext context) => new HomePage(),
-            '/lista/add': (BuildContext context) => new ListaAddPage(tag: 1),
-            // '/item/add': (BuildContext context) => new ItemAddPage(tag: 1),
-            ListaDetallePage.routeName: (context) => ListaDetallePage(),
-            ItemAddPage.routeName: (context) => ItemAddPage(),
-          },
-          home: FutureBuilder(
-            future: _fbApp,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                print('You have an error! ${snapshot.error.toString()}');
-                return Text('Algo ha ido mal!');
-              } else if (snapshot.hasData) {
-                return new HomePage();
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          )
-          //HomePage(),
-          ),
+      child: GetMaterialApp(
+        initialRoute: '/',
+        unknownRoute: GetPage(name: '/notfound', page: () => UnknownPage()),
+        getPages: [
+          GetPage(name: '/', page: () => HomePage()),
+          GetPage(name: '/lista/add', page: () => ListaAddPage()),
+          GetPage(name: '/lista/detalle/:id', page: () => ListaDetallePage()),
+          GetPage(name: '/lista/:id/add-item', page: () => ItemAddPage()),
+        ],
+        debugShowCheckedModeBanner: false,
+        title: title,
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          scaffoldBackgroundColor: Color(0xFFf6f5ee),
+        ),
+        home: HomePage(),
+        // home: FutureBuilder(
+        //   future: _fbApp,
+        //   builder: (context, snapshot) {
+        //     if (snapshot.hasError) {
+        //       print('You have an error! ${snapshot.error.toString()}');
+        //       return Text('Algo ha ido mal!');
+        //     } else if (snapshot.hasData) {
+        //       return new HomePage();
+        //     } else {
+        //       return Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }
+        //   },
+        // )
+        //HomePage(),
+      ),
     );
   }
 }
