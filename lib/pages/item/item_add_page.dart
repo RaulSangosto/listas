@@ -28,6 +28,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
       lista.addItem(item);
     }
     listas.removeAt(index);
+    lista.items.sort((a, b) => b.marcado ? -1 : 1);
     listas.insert(index, lista);
 
     // final provider = Provider.of<ListasProvider>(context, listen: false);

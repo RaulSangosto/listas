@@ -35,23 +35,33 @@ class ListaDetallePage extends StatelessWidget {
   }
 }
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   final String lista_id;
 
   const Body({Key? key, required this.lista_id}) : super(key: key);
 
-  // void onCheck(Item item) {
-  //   String lista_id = Get.parameters['id']!;
-  //   var listas = ListaController.to.listas;
-  //   Lista lista = ListaController.to.getLista(lista_id);
-  //   int index = listas.indexOf(lista);
-  //   lista.marcarItem(item);
-  //   listas.insert(index, lista);
-  // }
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  void onCheck(Item item) {
+    setState(() {
+      Lista lista = ListaController.to.getLista(widget.lista_id);
+      var listas = ListaController.to.listas;
+      lista = ListaController.to.getLista(widget.lista_id);
+      int index = listas.indexOf(lista);
+      lista.marcarItem(item);
+      listas.removeAt(index);
+      lista.items.sort((a, b) => b.marcado ? -1 : 1);
+      listas.insert(index, lista);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    Lista lista = ListaController.to.getLista(lista_id);
+    Lista lista = ListaController.to.getLista(widget.lista_id);
+    final _myListKey = GlobalKey<AnimatedListState>();
 
     return CustomScrollView(
       slivers: <Widget>[
@@ -78,21 +88,12 @@ class Body extends StatelessWidget {
             ),
           ],
         ),
-        buildSliverList(lista),
+        buildSliverList(lista, onCheck),
       ],
     );
   }
 
-  Widget buildSliverList(Lista lista) {
-    void onCheck(Item item) {
-      var listas = ListaController.to.listas;
-      lista = ListaController.to.getLista(lista_id);
-      int index = listas.indexOf(lista);
-      lista.marcarItem(item);
-      listas.removeAt(index);
-      listas.insert(index, lista);
-    }
-
+  Widget buildSliverList(Lista lista, Function onCheck) {
     if (lista.items.isNotEmpty) {
       return SliverList(
         delegate: SliverChildListDelegate(
