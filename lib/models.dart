@@ -18,7 +18,7 @@ class User {
         'nombre': nombre,
       };
 
-  String get_iniciales() {
+  String getIniciales() {
     String iniciales = "";
     for (var s in this.nombre.split(" ")) {
       iniciales += s.substring(0, 1).toUpperCase();
@@ -115,7 +115,7 @@ class Lista {
       required this.items,
       required this.usuarios});
 
-  int items_completos() {
+  int itemsCompletos() {
     int completos = 0;
     for (var item in this.items) {
       if (item.marcado) {
@@ -126,7 +126,7 @@ class Lista {
     return completos;
   }
 
-  List<Map<String, dynamic>> get_items() {
+  List<Map<String, dynamic>> getItems() {
     List<Map<String, dynamic>> lista = [];
     for (Item item in this.items) {
       lista.add(item.toJson());
@@ -134,7 +134,7 @@ class Lista {
     return lista;
   }
 
-  List<Map<String, dynamic>> get_usuarios() {
+  List<Map<String, dynamic>> getUsuarios() {
     List<Map<String, dynamic>> lista = [];
     for (User user in this.usuarios) {
       lista.add(user.toJson());
@@ -188,7 +188,7 @@ class Lista {
         'id': id,
         'nombre': nombre,
         'autor': autor?.id,
-        'items': get_items(),
-        'usuarios': get_usuarios(),
+        'items': getItems(),
+        'usuarios': getUsuarios(),
       };
 }

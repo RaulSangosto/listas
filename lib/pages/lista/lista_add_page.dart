@@ -2,12 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:listas/main.dart';
+import 'package:listas/controller/listas_controller.dart';
 import 'package:listas/models.dart';
-import 'package:listas/provider/listas.dart';
-import 'package:provider/provider.dart';
-
-import 'lista_detalle_page.dart';
 
 class ListaAddPage extends StatefulWidget {
   final int tag;
@@ -62,21 +58,15 @@ class _ListaAddPageState extends State<ListaAddPage> {
         items: [],
         usuarios: [],
       );
+      ListaController listaController = ListaController.to;
+      listaController.listas.add(lista);
+      print("listas: ${listaController.listas.length}");
 
-      final provider = Provider.of<ListasProvider>(context, listen: false);
-      provider.addLista(lista);
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) =>
-      //             ListaDetallePage(lista: lista, tag: widget.tag)));
-      // Navigator.pop(context);
-      // Navigator.popAndPushNamed(
-      //   context,
-      //   ListaDetallePage.routeName,
-      //   arguments: ScreenListaArguments(lista.id, widget.tag),
-      // );
+      // final provider = Provider.of<ListasProvider>(context, listen: false);
+      // provider.addLista(lista);
+
       Get.offNamed("/lista/detalle/${lista.id}");
+      //Get.back();
     }
   }
 }
@@ -118,6 +108,7 @@ class Body extends StatelessWidget {
         maxLines: 1,
         initialValue: nombre,
         onChanged: onChangedNombre,
+        autofocus: true,
         validator: (title) {
           if (title!.isEmpty) {
             return 'El titulo no puede estar vacio';

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:listas/main.dart';
+import 'package:listas/controller/articulos_controller.dart';
+import 'package:listas/controller/listas_controller.dart';
 import 'package:listas/models.dart';
-import 'package:listas/provider/listas.dart';
 import 'package:listas/widgets/articulos.dart';
-import 'package:provider/provider.dart';
 
 class ItemAddPage extends StatefulWidget {
   ItemAddPage({Key? key}) : super(key: key);
@@ -15,18 +14,21 @@ class ItemAddPage extends StatefulWidget {
 
 class _ItemAddPageState extends State<ItemAddPage> {
   void onAddItem(Articulo articulo) {
-    setState(() {
-      final String lista_id = Get.parameters["id"]!;
-      final provider = Provider.of<ListasProvider>(context, listen: false);
-      Lista lista = provider.getLista(lista_id);
+    final String lista_id = Get.parameters["id"]!;
+    Lista lista = ListaController.to.getLista(lista_id);
+    var listas = ListaController.to.listas;
+    int index = listas.indexOf(lista);
 
-      if (lista.hasItemArticulo(articulo)) {
-        lista.increaseItem(articulo);
-      } else {
-        Item item = new Item(articulo: articulo);
-        lista.addItem(item);
-      }
-    });
+    // final provider = Provider.of<ListasProvider>(context, listen: false);
+
+    if (lista.hasItemArticulo(articulo)) {
+      lista.increaseItem(articulo);
+    } else {
+      Item item = new Item(articulo: articulo);
+      lista.addItem(item);
+    }
+    listas.removeAt(index);
+    listas.insert(index, lista);
 
     // final provider = Provider.of<ListasProvider>(context, listen: false);
     // setState(() {
@@ -35,19 +37,19 @@ class _ItemAddPageState extends State<ItemAddPage> {
   }
 
   void onRemoveItem(Articulo articulo) {
-    setState(() {
-      final String lista_id = Get.parameters["id"]!;
-      final provider = Provider.of<ListasProvider>(context, listen: false);
-      Lista lista = provider.getLista(lista_id);
-      lista.decreaseItem(articulo);
-    });
+    final String lista_id = Get.parameters["id"]!;
+    Lista lista = ListaController.to.getLista(lista_id);
+    var listas = ListaController.to.listas;
+    lista.decreaseItem(articulo);
+    int index = listas.indexOf(lista);
+    listas.removeAt(index);
+    listas.insert(index, lista);
   }
 
   int getCantidadArticulo(Articulo articulo) {
     int cantidad = 0;
     final String lista_id = Get.parameters["id"]!;
-    final provider = Provider.of<ListasProvider>(context, listen: false);
-    Lista lista = provider.getLista(lista_id);
+    Lista lista = ListaController.to.getLista(lista_id);
 
     if (lista.hasItemArticulo(articulo)) {
       cantidad = lista.getItemArticulo(articulo).cantidad;
@@ -57,8 +59,7 @@ class _ItemAddPageState extends State<ItemAddPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ListasProvider>(context);
-    final articulos = provider.articulos;
+    final articulos = ArticuloController.to.articulos;
 
     return Hero(
       tag: 1,
@@ -74,17 +75,19 @@ class _ItemAddPageState extends State<ItemAddPage> {
         ),
         backgroundColor: Colors.blue,
         body: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var articulo in articulos)
-                ArticuloListTile(
-                  articulo: articulo,
-                  onAddItem: onAddItem,
-                  onRemoveItem: onRemoveItem,
-                  cantidad: getCantidadArticulo(articulo),
-                ),
-            ],
+          child: Obx(
+            () => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var articulo in articulos)
+                  ArticuloListTile(
+                    articulo: articulo,
+                    onAddItem: onAddItem,
+                    onRemoveItem: onRemoveItem,
+                    cantidad: getCantidadArticulo(articulo),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

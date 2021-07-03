@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:listas/controller/articulos_controller.dart';
 import 'package:listas/controller/listas_controller.dart';
-import 'package:listas/main.dart';
-import 'package:listas/models.dart';
-import 'package:listas/pages/lista/lista_detalle_page.dart';
-import 'package:listas/provider/listas.dart';
-import 'package:provider/provider.dart';
 
 class ListasPage extends StatefulWidget {
   @override
@@ -13,15 +9,17 @@ class ListasPage extends StatefulWidget {
 }
 
 class _ListasPageState extends State<ListasPage> {
+  final ListaController listaController = Get.put(ListaController());
+  final ArticuloController articuloController = Get.put(ArticuloController());
+
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ListaController>(
-      init: ListaController(),
-      builder: (_) => SingleChildScrollView(
-        child: Column(
+    return SingleChildScrollView(
+      child: Obx(
+        () => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            for (var lista in _.listas)
+            for (var lista in listaController.listas)
               ListItem(
                 lista_id: lista.id,
               ),
@@ -43,8 +41,7 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ListasProvider>(context);
-    final lista = provider.getLista(lista_id);
+    final lista = ListaController.to.getLista(lista_id);
     return Card(
       elevation: 3,
       child: ListTile(
@@ -64,7 +61,7 @@ class ListItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        lista.items_completos().toString() +
+                        lista.itemsCompletos().toString() +
                             '/' +
                             lista.items.length.toString(),
                         style: TextStyle(
@@ -89,8 +86,8 @@ class ListItem extends StatelessWidget {
                 color: Colors.green[200],
               ),
               FractionallySizedBox(
-                widthFactor: lista.items_completos() > 0
-                    ? lista.items_completos() / lista.items.length
+                widthFactor: lista.itemsCompletos() > 0
+                    ? lista.itemsCompletos() / lista.items.length
                     : 0,
                 child: Container(
                   height: 2,
@@ -112,7 +109,7 @@ class ListItem extends StatelessWidget {
                       foregroundColor: Colors.white,
                       radius: 10.0,
                       child: Text(
-                        lista.usuarios.first.get_iniciales(),
+                        lista.usuarios.first.getIniciales(),
                         style: TextStyle(fontSize: 10),
                       ),
                     ),
@@ -144,8 +141,7 @@ class ListItem extends StatelessWidget {
   }
 
   Widget buildMoreUsuarios(context) {
-    final provider = Provider.of<ListasProvider>(context);
-    final lista = provider.getLista(lista_id);
+    final lista = ListaController.to.getLista(lista_id);
 
     if (lista.usuarios.length > 1) {
       return CircleAvatar(

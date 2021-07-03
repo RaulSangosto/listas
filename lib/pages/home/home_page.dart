@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/main.dart';
-import 'package:listas/pages/item/item_add_page.dart';
 import 'package:listas/pages/lista/listas_page.dart';
-
-import '../lista/lista_add_page.dart';
 
 class HomePage extends StatefulWidget {
   @override

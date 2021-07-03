@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:listas/models.dart';
 
-class ListasProvider extends ChangeNotifier {
+class ListaController extends GetxController {
+  static ListaController get to => Get.find();
+
   List<Lista> _listas = [
     Lista(
       id: '1',
@@ -68,7 +70,7 @@ class ListasProvider extends ChangeNotifier {
   void addLista(Lista lista) {
     _listas.add(lista);
 
-    notifyListeners();
+    update();
   }
 
   Lista getLista(String id) {
@@ -79,7 +81,7 @@ class ListasProvider extends ChangeNotifier {
     Lista lista = getLista(id);
     lista.items.add(item);
 
-    notifyListeners();
+    update();
   }
 
   void removeItemLista(String id, Articulo articulo) {
@@ -91,7 +93,15 @@ class ListasProvider extends ChangeNotifier {
       lista.items.remove(item);
     }
 
-    notifyListeners();
+    update();
+  }
+
+  void marcarItemLista(String id, Item item) {
+    Lista lista = getLista(id);
+    lista.marcarItem(item);
+
+    print("marcado: ${item.marcado}");
+    update();
   }
 
   List<Categoria> _categorias = [
@@ -114,12 +124,12 @@ class ListasProvider extends ChangeNotifier {
   void addArticulo(Articulo articulo) {
     _articulos.add(articulo);
 
-    notifyListeners();
+    update();
   }
 
   void addCategoria(Categoria categoria) {
     _categorias.add(categoria);
 
-    notifyListeners();
+    update();
   }
 }
