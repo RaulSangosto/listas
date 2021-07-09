@@ -55,18 +55,13 @@ class _ListaAddPageState extends State<ListaAddPage> {
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         nombre: nombre,
         autor: new User(nombre: 'raul'),
-        items: [],
+        items: new RxList<Item>([]),
         usuarios: [],
       );
       ListaController listaController = ListaController.to;
       listaController.listas.add(lista);
-      print("listas: ${listaController.listas.length}");
-
-      // final provider = Provider.of<ListasProvider>(context, listen: false);
-      // provider.addLista(lista);
 
       Get.offNamed("/lista/detalle/${lista.id}");
-      //Get.back();
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/models.dart';
 
@@ -9,7 +10,7 @@ class ListaController extends GetxController {
       id: '1',
       nombre: 'Lista de la Compra 1',
       autor: new User(id: '1', nombre: 'raúl', email: 'raulsangosto@gmail.com'),
-      items: [
+      items: ([
         new Item(
           id: '1',
           articulo: new Articulo(
@@ -27,7 +28,7 @@ class ListaController extends GetxController {
           cantidad: 2,
           marcado: true,
         )
-      ],
+      ]).obs,
       usuarios: [
         new User(
             id: '2', nombre: 'marta sánchez angosto', email: 'marta@mail.es'),
@@ -38,7 +39,7 @@ class ListaController extends GetxController {
       id: '2',
       nombre: 'Lista de la Compra 2',
       autor: new User(id: '1', nombre: 'raúl', email: 'raulsangosto@gmail.com'),
-      items: [
+      items: ([
         new Item(
           id: '1',
           articulo: new Articulo(
@@ -56,7 +57,7 @@ class ListaController extends GetxController {
           cantidad: 2,
           marcado: true,
         )
-      ],
+      ]).obs,
       usuarios: [
         new User(
             id: '2', nombre: 'marta sánchez angosto', email: 'marta@mail.es'),
@@ -65,7 +66,10 @@ class ListaController extends GetxController {
     ),
   ];
 
+  GlobalKey<AnimatedListState> _myListKey = GlobalKey<AnimatedListState>();
+
   List<Lista> get listas => _listas.toList();
+  GlobalKey<AnimatedListState> get listKey => _myListKey;
 
   void addLista(Lista lista) {
     _listas.add(lista);

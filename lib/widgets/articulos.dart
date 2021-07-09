@@ -15,7 +15,7 @@ class ArticuloListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Flexible(
       child: ListTile(
         tileColor: Colors.white,
         leading: IconButton(
@@ -24,15 +24,13 @@ class ArticuloListTile extends StatelessWidget {
               Icons.add_circle,
               color: (cantidad == 0) ? Colors.grey : Colors.blue,
             )),
-        title: Padding(
-          padding: const EdgeInsets.only(right: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(articulo.nombre),
-              Text(cantidad.toString()),
-            ],
-          ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: Text(articulo.nombre)),
+            Expanded(child: Text(cantidad <= 0 ? " " : cantidad.toString())),
+            SizedBox(width: 20),
+          ],
         ),
         trailing: cantidad > 0
             ? IconButton(
@@ -42,7 +40,9 @@ class ArticuloListTile extends StatelessWidget {
                   color: Colors.red,
                 ),
               )
-            : SizedBox(),
+            : SizedBox(
+                width: 50,
+              ),
       ),
     );
   }

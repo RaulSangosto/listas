@@ -13,10 +13,10 @@ void main() {
 }
 
 class ScreenListaArguments {
-  final String lista_id;
+  final String listaId;
   final int tag;
 
-  ScreenListaArguments(this.lista_id, this.tag);
+  ScreenListaArguments(this.listaId, this.tag);
 }
 
 class MyApp extends StatelessWidget {

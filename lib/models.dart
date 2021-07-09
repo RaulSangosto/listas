@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 
 class User {
   String? id;
@@ -105,7 +106,7 @@ class Lista {
   String id;
   String nombre;
   User? autor;
-  List<Item> items;
+  RxList<Item> items;
   List<User> usuarios;
 
   Lista(

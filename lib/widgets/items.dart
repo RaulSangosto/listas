@@ -3,9 +3,11 @@ import 'package:listas/models.dart';
 
 class ItemListTile extends StatelessWidget {
   final Item item;
+  final int index;
   final Function onCheck;
 
-  ItemListTile({required this.item, required this.onCheck});
+  ItemListTile(
+      {required this.item, required this.index, required this.onCheck});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class ItemListTile extends StatelessWidget {
       elevation: item.marcado ? 0 : 1,
       child: ListTile(
         leading: IconButton(
-          onPressed: () => onCheck(item),
+          onPressed: () => onCheck(index),
           icon: item.marcado
               ? Icon(
                   Icons.check,
@@ -36,6 +38,29 @@ class ItemListTile extends StatelessWidget {
           ),
         ),
         trailing: Icon(Icons.fastfood),
+      ),
+    );
+  }
+}
+
+class BlankListTile extends StatelessWidget {
+  const BlankListTile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.transparent,
+      elevation: 0,
+      child: ListTile(
+        title: Padding(
+          padding: const EdgeInsets.only(right: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(""),
+            ],
+          ),
+        ),
       ),
     );
   }

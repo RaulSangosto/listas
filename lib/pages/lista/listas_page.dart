@@ -21,7 +21,7 @@ class _ListasPageState extends State<ListasPage> {
           children: [
             for (var lista in listaController.listas)
               ListItem(
-                lista_id: lista.id,
+                listaId: lista.id,
               ),
           ],
         ),
@@ -33,15 +33,15 @@ class _ListasPageState extends State<ListasPage> {
 class ListItem extends StatelessWidget {
   const ListItem({
     Key? key,
-    required this.lista_id,
+    required this.listaId,
   }) : super(key: key);
 
-  final String lista_id;
+  final String listaId;
   final tag = 1;
 
   @override
   Widget build(BuildContext context) {
-    final lista = ListaController.to.getLista(lista_id);
+    final lista = ListaController.to.getLista(listaId);
     return Card(
       elevation: 3,
       child: ListTile(
@@ -126,13 +126,13 @@ class ListItem extends StatelessWidget {
               : SizedBox(),
         ),
         onTap: () {
-          //print(lista_id);
-          print("Lista detalle : $lista_id");
-          Get.toNamed("/lista/detalle/$lista_id");
+          //print(listaId);
+          print("Lista detalle : $listaId");
+          Get.toNamed("/lista/detalle/$listaId");
           // Navigator.pushNamed(
           //   context,
           //   ListaDetallePage.routeName,
-          //   arguments: ScreenListaArguments(lista_id, tag),
+          //   arguments: ScreenListaArguments(listaId, tag),
           // );
         },
         // subtitle: Text('Participantes'),
@@ -141,7 +141,7 @@ class ListItem extends StatelessWidget {
   }
 
   Widget buildMoreUsuarios(context) {
-    final lista = ListaController.to.getLista(lista_id);
+    final lista = ListaController.to.getLista(listaId);
 
     if (lista.usuarios.length > 1) {
       return CircleAvatar(

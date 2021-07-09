@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/controller/listas_controller.dart';
 import 'package:listas/models.dart';
+import 'package:listas/pages/item/item_add_page.dart';
 import 'package:listas/widgets/items.dart';
 
 // class ListaDetallePage extends StatefulWidget {
@@ -19,14 +20,17 @@ import 'package:listas/widgets/items.dart';
 class ListaDetallePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final String lista_id = Get.parameters["id"]!;
+    final String listaId = Get.parameters["id"]!;
 
     return Scaffold(
-      body: Body(lista_id: lista_id),
+      body: Body(listaId: listaId),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          Get.toNamed("/lista/$lista_id/add-item");
+          print(listaId);
+          showSearch(
+              context: context, delegate: ArticulosSearch(listaId: listaId));
+          //Get.toNamed("/lista/$listaId/add-item");
         },
         child: Icon(Icons.add),
         heroTag: 1,
@@ -36,32 +40,51 @@ class ListaDetallePage extends StatelessWidget {
 }
 
 class Body extends StatefulWidget {
-  final String lista_id;
+  final String listaId;
 
-  const Body({Key? key, required this.lista_id}) : super(key: key);
+  const Body({Key? key, required this.listaId}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
-  void onCheck(Item item) {
-    setState(() {
-      Lista lista = ListaController.to.getLista(widget.lista_id);
-      var listas = ListaController.to.listas;
-      lista = ListaController.to.getLista(widget.lista_id);
-      int index = listas.indexOf(lista);
-      lista.marcarItem(item);
-      listas.removeAt(index);
-      lista.items.sort((a, b) => b.marcado ? -1 : 1);
-      listas.insert(index, lista);
-    });
+  void removeItem(Item item, int index) {
+    Lista lista = ListaController.to.getLista(widget.listaId);
+    GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
+
+    print("index: $index = ${lista.items.length}");
+    _myListKey.currentState!
+        .removeItem(index, (context, animation) => BlankListTile());
+  }
+
+  void addItem(Item item, int index) {
+    GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
+
+    _myListKey.currentState!.insertItem(
+      index,
+      duration: Duration(milliseconds: 400),
+    );
+  }
+
+  void onCheck(int index) {
+    Lista lista = ListaController.to.getLista(widget.listaId);
+    Item item = lista.items.removeAt(index);
+    removeItem(item, index);
+    if (!item.marcado) {
+      index = lista.items.length;
+    } else {
+      index = 0;
+    }
+    lista.items.insert(index, item);
+    lista.marcarItem(item);
+
+    addItem(item, index);
   }
 
   @override
   Widget build(BuildContext context) {
-    Lista lista = ListaController.to.getLista(widget.lista_id);
-    final _myListKey = GlobalKey<AnimatedListState>();
+    Lista lista = ListaController.to.getLista(widget.listaId);
 
     return CustomScrollView(
       slivers: <Widget>[
@@ -88,29 +111,61 @@ class _BodyState extends State<Body> {
             ),
           ],
         ),
-        buildSliverList(lista, onCheck),
+        SliverFillRemaining(child: buildSliverList(lista, onCheck)),
       ],
     );
   }
 
   Widget buildSliverList(Lista lista, Function onCheck) {
-    if (lista.items.isNotEmpty) {
-      return SliverList(
-        delegate: SliverChildListDelegate(
-          [
-            for (var item in lista.items)
-              ItemListTile(item: item, onCheck: onCheck)
-          ],
-        ),
-      );
-    } else {
-      return SliverFillRemaining(
-        child: Center(
-          child: Text('Comienza añadiendo productos, es muy fácil'),
-        ),
-      );
-    }
+    var listas = ListaController.to.listas;
+    GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
+
+    int index = listas.indexOf(lista);
+    return Obx(() => AnimatedList(
+          key: _myListKey,
+          initialItemCount: lista.items.length,
+          itemBuilder:
+              (BuildContext context, int i, Animation<double> animation) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                      begin: Offset(
+                          0,
+                          (i >= lista.items.length
+                              ? 0
+                              : (lista.items[i].marcado ? -1 : 1))),
+                      end: Offset.zero)
+                  .animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: Interval(0, 0.5),
+                ),
+              ),
+              child: ItemListTile(
+                item: lista.items[i],
+                index: i,
+                onCheck: onCheck,
+              ),
+            );
+          },
+        ));
   }
+
+  // Widget buildSliverList(Lista lista, Function onCheck) {
+  //   var listas = ListaController.to.listas;
+  //   int index = listas.indexOf(lista);
+  //   if (lista.items.isNotEmpty) {
+  //     return Obx(() => ListView(
+  //           children: [
+  //             for (var item in listas[index].items)
+  //               ItemListTile(item: item, onCheck: onCheck)
+  //           ],
+  //         ));
+  //   } else {
+  //     return Center(
+  //       child: Text('Comienza añadiendo productos, es muy fácil'),
+  //     );
+  //   }
+  // }
 }
 
 class SliverMultilineAppBar extends StatelessWidget {

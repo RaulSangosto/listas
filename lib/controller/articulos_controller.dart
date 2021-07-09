@@ -16,4 +16,8 @@ class ArticuloController extends GetxController {
   Articulo getArticulo(String id) {
     return _articulos.where((articulo) => (articulo.id == id)).first;
   }
+
+  Articulo getArticuloNombre(String nombre) {
+    return _articulos.where((articulo) => (articulo.nombre == nombre)).first;
+  }
 }
