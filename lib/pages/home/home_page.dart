@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/main.dart';
-import 'package:listas/pages/lista/listas_page.dart';
+import 'package:listas/pages/home/listas_page.dart';
+
+import 'despensa_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final tabs = [
       ListasPage(),
-      Container(),
+      DespensaPage(),
     ];
     return Scaffold(
       appBar: AppBar(

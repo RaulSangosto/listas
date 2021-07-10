@@ -126,16 +126,8 @@ class ListItem extends StatelessWidget {
               : SizedBox(),
         ),
         onTap: () {
-          //print(listaId);
-          print("Lista detalle : $listaId");
           Get.toNamed("/lista/detalle/$listaId");
-          // Navigator.pushNamed(
-          //   context,
-          //   ListaDetallePage.routeName,
-          //   arguments: ScreenListaArguments(listaId, tag),
-          // );
         },
-        // subtitle: Text('Participantes'),
       ),
     );
   }
