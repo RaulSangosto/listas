@@ -27,7 +27,6 @@ class ListaDetallePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          print(listaId);
           showSearch(
               context: context, delegate: ArticulosSearch(listaId: listaId));
           //Get.toNamed("/lista/$listaId/add-item");
@@ -51,9 +50,11 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   void removeItem(Item item, int index) {
     Lista lista = ListaController.to.getLista(widget.listaId);
+    var listas = ListaController.to.listas;
+    int listaPos = listas.indexOf(lista);
+
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
 
-    print("index: $index = ${lista.items.length}");
     _myListKey.currentState!.removeItem(
         index,
         (context, animation) => (index == 0 && !item.marcado)
@@ -63,19 +64,31 @@ class _BodyState extends State<Body> {
                 onCheck: onCheck,
               )
             : BlankListTile());
+
+    listas.remove(lista);
+    listas.insert(listaPos, lista);
   }
 
   void addItem(Item item, int index) {
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
+    Lista lista = ListaController.to.getLista(widget.listaId);
+    var listas = ListaController.to.listas;
+    int listaPos = listas.indexOf(lista);
 
     _myListKey.currentState!.insertItem(
       index,
       duration: Duration(milliseconds: 400),
     );
+
+    listas.remove(lista);
+    listas.insert(listaPos, lista);
   }
 
   void onCheck(int index) {
     Lista lista = ListaController.to.getLista(widget.listaId);
+    var listas = ListaController.to.listas;
+    int listaPos = listas.indexOf(lista);
+
     Item item = lista.items.removeAt(index);
     removeItem(item, index);
     if (!item.marcado) {
@@ -85,8 +98,10 @@ class _BodyState extends State<Body> {
     }
     lista.items.insert(index, item);
     lista.marcarItem(item);
-
     addItem(item, index);
+
+    listas.remove(lista);
+    listas.insert(listaPos, lista);
   }
 
   @override
@@ -133,32 +148,26 @@ class _BodyState extends State<Body> {
           initialItemCount: lista.items.length,
           itemBuilder:
               (BuildContext context, int i, Animation<double> animation) {
-            return (i == 0 && !lista.items[i].marcado)
-                ? ItemListTile(
-                    item: lista.items[i],
-                    index: i,
-                    onCheck: onCheck,
-                  )
-                : SlideTransition(
-                    position: Tween<Offset>(
-                            begin: Offset(
-                                0,
-                                (i >= lista.items.length
-                                    ? 0
-                                    : (lista.items[i].marcado ? -1 : 1))),
-                            end: Offset.zero)
-                        .animate(
-                      CurvedAnimation(
-                        parent: animation,
-                        curve: Interval(0, 0.5),
-                      ),
-                    ),
-                    child: ItemListTile(
-                      item: lista.items[i],
-                      index: i,
-                      onCheck: onCheck,
-                    ),
-                  );
+            return SlideTransition(
+              position: Tween<Offset>(
+                      begin: Offset(
+                          0,
+                          (i >= lista.items.length
+                              ? 0
+                              : (lista.items[i].marcado ? -1 : 1))),
+                      end: Offset.zero)
+                  .animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: Interval(0, 0.5),
+                ),
+              ),
+              child: ItemListTile(
+                item: lista.items[i],
+                index: i,
+                onCheck: onCheck,
+              ),
+            );
           },
         ));
   }

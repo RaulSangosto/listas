@@ -149,6 +149,9 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
 
   void onAddItem(Articulo articulo) {
     Lista lista = ListaController.to.getLista(listaId);
+    var listas = ListaController.to.listas;
+    int listaPos = listas.indexOf(lista);
+
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
 
     if (lista.hasItemArticulo(articulo)) {
@@ -161,10 +164,16 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
         duration: Duration(milliseconds: 600),
       );
     }
+
+    listas.remove(lista);
+    listas.insert(listaPos, lista);
   }
 
   void onRemoveItem(Articulo articulo) {
     Lista lista = ListaController.to.getLista(listaId);
+    var listas = ListaController.to.listas;
+    int listaPos = listas.indexOf(lista);
+
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
     Item item = lista.getItemArticulo(articulo);
     if (item.cantidad <= 1) {
@@ -173,6 +182,9 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
           .removeItem(index, (context, animation) => BlankListTile());
     }
     lista.decreaseItem(articulo);
+
+    listas.remove(lista);
+    listas.insert(listaPos, lista);
   }
 
   int getCantidadArticulo(Articulo articulo) {
@@ -185,9 +197,9 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
     if (lista.hasItemArticulo(articulo)) {
       cantidad = lista.getItemArticulo(articulo).cantidad;
     }
-    // int index = articulos.indexOf(articulo);
-    // articulos.removeAt(index);
-    // articulos.insert(index, articulo);
+    int index = articulos.indexOf(articulo);
+    articulos.removeAt(index);
+    articulos.insert(index, articulo);
     return cantidad;
   }
 
