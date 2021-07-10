@@ -54,8 +54,15 @@ class _BodyState extends State<Body> {
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
 
     print("index: $index = ${lista.items.length}");
-    _myListKey.currentState!
-        .removeItem(index, (context, animation) => BlankListTile());
+    _myListKey.currentState!.removeItem(
+        index,
+        (context, animation) => (index == 0 && !item.marcado)
+            ? ItemListTile(
+                item: item,
+                index: index,
+                onCheck: onCheck,
+              )
+            : BlankListTile());
   }
 
   void addItem(Item item, int index) {
@@ -126,26 +133,32 @@ class _BodyState extends State<Body> {
           initialItemCount: lista.items.length,
           itemBuilder:
               (BuildContext context, int i, Animation<double> animation) {
-            return SlideTransition(
-              position: Tween<Offset>(
-                      begin: Offset(
-                          0,
-                          (i >= lista.items.length
-                              ? 0
-                              : (lista.items[i].marcado ? -1 : 1))),
-                      end: Offset.zero)
-                  .animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: Interval(0, 0.5),
-                ),
-              ),
-              child: ItemListTile(
-                item: lista.items[i],
-                index: i,
-                onCheck: onCheck,
-              ),
-            );
+            return (i == 0 && !lista.items[i].marcado)
+                ? ItemListTile(
+                    item: lista.items[i],
+                    index: i,
+                    onCheck: onCheck,
+                  )
+                : SlideTransition(
+                    position: Tween<Offset>(
+                            begin: Offset(
+                                0,
+                                (i >= lista.items.length
+                                    ? 0
+                                    : (lista.items[i].marcado ? -1 : 1))),
+                            end: Offset.zero)
+                        .animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Interval(0, 0.5),
+                      ),
+                    ),
+                    child: ItemListTile(
+                      item: lista.items[i],
+                      index: i,
+                      onCheck: onCheck,
+                    ),
+                  );
           },
         ));
   }

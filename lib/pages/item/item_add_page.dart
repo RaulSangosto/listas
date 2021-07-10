@@ -185,9 +185,9 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
     if (lista.hasItemArticulo(articulo)) {
       cantidad = lista.getItemArticulo(articulo).cantidad;
     }
-    int index = articulos.indexOf(articulo);
-    articulos.removeAt(index);
-    articulos.insert(index, articulo);
+    // int index = articulos.indexOf(articulo);
+    // articulos.removeAt(index);
+    // articulos.insert(index, articulo);
     return cantidad;
   }
 
@@ -237,7 +237,9 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
       suggestions: suggestions.map<Articulo>((Articulo i) => i).toList(),
       onAdd: (Articulo suggestion) {
         query = "";
+        _history.remove(suggestion);
         onAddItem(suggestion);
+        _history.insert(0, suggestion);
         //showResults(context);
       },
       onRemove: (Articulo suggestion) {
@@ -312,16 +314,54 @@ class _SuggestionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final Articulo? newArticulo =
+        query.isEmpty ? null : Articulo(nombre: query);
+    final bool isNew = newArticulo == null
+        ? false
+        : suggestions
+            .where((articulo) => (articulo.nombre == newArticulo.nombre))
+            .isEmpty;
+
     return ListView.builder(
-      itemCount: suggestions.length,
+      itemCount: !isNew ? suggestions.length : suggestions.length + 1,
       itemBuilder: (BuildContext context, int i) {
-        final Articulo suggestion = suggestions[i];
-        return ArticuloListTile(
-          articulo: suggestion,
-          cantidad: getCantidad(suggestion),
-          onAddItem: onAdd,
-          onRemoveItem: onRemove,
-        );
+        if (isNew) {
+          if (i == 0) {
+            return ArticuloListTile(
+              articulo: newArticulo,
+              cantidad: 0,
+              onAddItem: (Articulo suggestion) {
+                print(suggestion.nombre);
+                suggestion.id =
+                    DateTime.now().microsecondsSinceEpoch.toString();
+                print(
+                    "length articulos before: ${ArticuloController.to.articulos.length}");
+                ArticuloController.to.articulos.insert(0, suggestion);
+                onAdd(suggestion);
+                print(
+                    "length articulos after: ${ArticuloController.to.articulos.length}");
+                //showResults(context);
+              },
+              onRemoveItem: onRemove,
+            );
+          } else {
+            final Articulo suggestion = suggestions[i - 1];
+            return ArticuloListTile(
+              articulo: suggestion,
+              cantidad: getCantidad(suggestion),
+              onAddItem: onAdd,
+              onRemoveItem: onRemove,
+            );
+          }
+        } else {
+          final Articulo suggestion = suggestions[i];
+          return ArticuloListTile(
+            articulo: suggestion,
+            cantidad: getCantidad(suggestion),
+            onAddItem: onAdd,
+            onRemoveItem: onRemove,
+          );
+        }
       },
     );
   }
