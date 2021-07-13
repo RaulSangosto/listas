@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:listas/main.dart';
+import 'package:listas/controller/theme_data.dart';
 import 'package:listas/pages/home/listas_page.dart';
 
 import 'despensa_page.dart';
@@ -22,10 +22,19 @@ class _HomePageState extends State<HomePage> {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(MyApp.title),
+        backgroundColor: MyThemeData.bgColor,
+        foregroundColor: MyThemeData.textColorDark,
+        toolbarHeight: 80,
+        elevation: 0,
+        title: Text(
+          selectedIndex == 0 ? "Mis Listas" : "Mi Despensa",
+          style: MyThemeData.h3,
+        ),
         actions: [
           IconButton(
             icon: CircleAvatar(
+              backgroundColor: MyThemeData.bgColorDark,
+              foregroundColor: MyThemeData.primaryColor,
               child: Text('R'),
             ),
             onPressed: () {},
@@ -33,35 +42,47 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.white.withOpacity(0.7),
-        selectedItemColor: Colors.white,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        backgroundColor: Colors.white,
+        unselectedItemColor: MyThemeData.primaryColor50,
+        selectedItemColor: MyThemeData.primaryColor,
+        selectedIconTheme: IconThemeData(size: 30),
+        unselectedIconTheme: IconThemeData(size: 24),
         currentIndex: selectedIndex,
         onTap: (index) => setState(() {
           selectedIndex = index;
         }),
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_outlined),
-            label: 'Listas',
+            icon: Icon(
+              Icons.shopping_bag_rounded,
+            ),
+            label: "Mis Listas",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.storefront),
-            label: 'Despensa',
+            icon: Icon(
+              Icons.storefront_rounded,
+            ),
+            label: "Despensa",
           ),
         ],
       ),
       body: tabs[selectedIndex],
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyThemeData.primaryColor,
         onPressed: () {
-          Get.toNamed("/lista/add");
-          // Navigator.pushNamed(context, "/lista/add");
+          String ruta = selectedIndex == 0 ? "/lista/add" : "/despensa/add";
+          Get.toNamed(ruta);
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          size: 30,
+        ),
         heroTag: tag,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

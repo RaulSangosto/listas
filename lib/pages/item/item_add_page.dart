@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/controller/articulos_controller.dart';
 import 'package:listas/controller/listas_controller.dart';
+import 'package:listas/controller/theme_data.dart';
 import 'package:listas/models.dart';
 import 'package:listas/widgets/articulos.dart';
 import 'package:listas/widgets/items.dart';
@@ -209,10 +210,9 @@ class ArticulosSearch extends SearchDelegate<Articulo?> {
     final ColorScheme colorScheme = theme.colorScheme;
     return Theme.of(context).copyWith(
       appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.brightness == Brightness.dark
-            ? Colors.white
-            : Colors.white,
-        iconTheme: theme.primaryIconTheme.copyWith(color: Colors.blue),
+        backgroundColor: Colors.white,
+        iconTheme:
+            theme.primaryIconTheme.copyWith(color: MyThemeData.primaryColor),
         textTheme: theme.textTheme,
       ),
       inputDecorationTheme: searchFieldDecorationTheme ??

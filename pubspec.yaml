@@ -25,6 +25,9 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.0
+  percent_indicator: "^2.1.7+2"
+  google_fonts: ^2.1.0
+  dotted_border: ^2.0.0
 
   # firebase integration
   # firebase_core: ^0.5.2+1

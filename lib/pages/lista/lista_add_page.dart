@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/controller/listas_controller.dart';
+import 'package:listas/controller/theme_data.dart';
 import 'package:listas/models.dart';
 
 class ListaAddPage extends StatefulWidget {
@@ -33,9 +34,9 @@ class _ListaAddPageState extends State<ListaAddPage> {
               },
             ),
             elevation: 0,
-            backgroundColor: Colors.blue,
+            backgroundColor: MyThemeData.primaryColor,
           ),
-          backgroundColor: Colors.blue,
+          backgroundColor: MyThemeData.primaryColor,
           body: Body(
             onChangedNombre: (nombre) => setState(() => this.nombre = nombre),
             onSavedLista: addLista,
@@ -84,12 +85,17 @@ class Body extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
+            padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 buildTitle(),
+                SizedBox(
+                  height: 40,
+                ),
                 buildButton(),
               ],
             ),
@@ -123,7 +129,7 @@ class Body extends StatelessWidget {
             onPressed: onSavedLista,
             child: Text(
               'CREAR',
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: MyThemeData.primaryColor),
             ),
           ),
         ],

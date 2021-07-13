@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:listas/controller/theme_data.dart';
 import 'package:listas/models.dart';
 
 class ArticuloListTile extends StatelessWidget {
@@ -22,7 +23,9 @@ class ArticuloListTile extends StatelessWidget {
             onPressed: () => onAddItem(articulo),
             icon: Icon(
               Icons.add_circle,
-              color: (cantidad == 0) ? Colors.grey : Colors.blue,
+              color: (cantidad == 0)
+                  ? MyThemeData.primaryColor50
+                  : MyThemeData.primaryColor,
             )),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,8 +39,8 @@ class ArticuloListTile extends StatelessWidget {
             ? IconButton(
                 onPressed: () => onRemoveItem(articulo),
                 icon: Icon(
-                  Icons.close,
-                  color: Colors.red,
+                  (cantidad > 1 ? Icons.remove : Icons.close),
+                  color: MyThemeData.dangerColor,
                 ),
               )
             : SizedBox(

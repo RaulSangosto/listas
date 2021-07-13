@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:listas/controller/listas_controller.dart';
+import 'package:listas/controller/theme_data.dart';
 import 'package:listas/models.dart';
 import 'package:listas/pages/item/item_add_page.dart';
 import 'package:listas/widgets/items.dart';
@@ -21,18 +22,37 @@ class ListaDetallePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String listaId = Get.parameters["id"]!;
+    Lista lista = ListaController.to.getLista(listaId);
 
     return Scaffold(
+      backgroundColor: MyThemeData.primaryColor,
       body: Body(listaId: listaId),
+      appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 80,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(lista.nombre),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.more_horiz_outlined),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: MyThemeData.primaryColor,
         onPressed: () {
           showSearch(
               context: context, delegate: ArticulosSearch(listaId: listaId));
           //Get.toNamed("/lista/$listaId/add-item");
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          size: 30,
+        ),
         heroTag: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
     );
   }
@@ -48,7 +68,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  void removeItem(Item item, int index) {
+  void removeItem(int index) {
     Lista lista = ListaController.to.getLista(widget.listaId);
     var listas = ListaController.to.listas;
     int listaPos = listas.indexOf(lista);
@@ -57,19 +77,23 @@ class _BodyState extends State<Body> {
 
     _myListKey.currentState!.removeItem(
         index,
-        (context, animation) => (index == 0 && !item.marcado)
-            ? ItemListTile(
-                item: item,
-                index: index,
-                onCheck: onCheck,
-              )
-            : BlankListTile());
+        (context, animation) => SizeTransition(
+            sizeFactor: Tween<double>(
+              begin: 0,
+              end: 1,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Interval(0, 0.5),
+              ),
+            ),
+            child: BlankListTile()));
 
     listas.remove(lista);
     listas.insert(listaPos, lista);
   }
 
-  void addItem(Item item, int index) {
+  void addItem(int index) {
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
     Lista lista = ListaController.to.getLista(widget.listaId);
     var listas = ListaController.to.listas;
@@ -89,8 +113,9 @@ class _BodyState extends State<Body> {
     var listas = ListaController.to.listas;
     int listaPos = listas.indexOf(lista);
 
+    removeItem(index);
     Item item = lista.items.removeAt(index);
-    removeItem(item, index);
+
     if (!item.marcado) {
       index = lista.items.length;
     } else {
@@ -98,7 +123,7 @@ class _BodyState extends State<Body> {
     }
     lista.items.insert(index, item);
     lista.marcarItem(item);
-    addItem(item, index);
+    addItem(index);
 
     listas.remove(lista);
     listas.insert(listaPos, lista);
@@ -106,34 +131,116 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
     Lista lista = ListaController.to.getLista(widget.listaId);
 
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverMultilineAppBar(
-          title: lista.nombre,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(Icons.arrow_back),
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(top: 20),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(40))),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 15, right: 15),
+              child: Obx(
+                () => Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 15.0),
+                      child: (lista.items.length > 0 &&
+                              lista.itemsCompletos() >= lista.items.length)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton(
+                                    onPressed: () {
+                                      for (var i = 0;
+                                          i < lista.items.length;
+                                          i++) {
+                                        removeItem(i);
+                                        //lista.removeItemAt(i);
+                                      }
+                                      //lista.clearItems();
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
+                                      side:
+                                          MaterialStateProperty.all<BorderSide>(
+                                              BorderSide(
+                                                  color:
+                                                      MyThemeData.primaryColor,
+                                                  width: 2)),
+                                      elevation:
+                                          MaterialStateProperty.all<double>(0),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              MyThemeData.primaryColor),
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Colors.transparent),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text("Vaciar Lista"),
+                                        SizedBox(width: 5),
+                                        Icon(Icons.delete_outline),
+                                      ],
+                                    ))
+                              ],
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                    Expanded(
+                      child: Scrollbar(
+                        thickness: 5,
+                        isAlwaysShown: true,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: AnimatedList(
+                            key: _myListKey,
+                            initialItemCount: lista.items.length + 1,
+                            itemBuilder: (BuildContext context, int i,
+                                Animation<double> animation) {
+                              if (i >= lista.items.length) {
+                                return AddListTile(
+                                  listaId: lista.id,
+                                );
+                              } else {
+                                return SizeTransition(
+                                  sizeFactor: Tween<double>(
+                                    begin: 0,
+                                    end: 1,
+                                  ).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Interval(0.2, 1),
+                                    ),
+                                  ),
+                                  child: ItemListTile(
+                                    item: lista.items[i],
+                                    index: i,
+                                    onCheck: onCheck,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.shopping_basket_outlined),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.people_alt_outlined),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.more_vert),
-            ),
-          ],
         ),
-        SliverFillRemaining(child: buildSliverList(lista, onCheck)),
       ],
     );
   }
@@ -143,33 +250,70 @@ class _BodyState extends State<Body> {
     GlobalKey<AnimatedListState> _myListKey = ListaController.to.listKey;
 
     int index = listas.indexOf(lista);
-    return Obx(() => AnimatedList(
-          key: _myListKey,
-          initialItemCount: lista.items.length,
-          itemBuilder:
-              (BuildContext context, int i, Animation<double> animation) {
-            return SlideTransition(
-              position: Tween<Offset>(
-                      begin: Offset(
-                          0,
-                          (i >= lista.items.length
-                              ? 0
-                              : (lista.items[i].marcado ? -1 : 1))),
-                      end: Offset.zero)
-                  .animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: Interval(0, 0.5),
-                ),
-              ),
-              child: ItemListTile(
-                item: lista.items[i],
-                index: i,
-                onCheck: onCheck,
-              ),
-            );
-          },
-        ));
+    return Obx(
+      () => Column(
+        children: [
+          LinearProgressIndicator(
+            backgroundColor: MyThemeData.primaryColor50,
+            color: MyThemeData.primaryColor,
+            value: lista.items.length > 0
+                ? (lista.itemsCompletos() / lista.items.length)
+                : 0.0,
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+            child: (lista.items.length > 0 &&
+                    lista.itemsCompletos() >= lista.items.length)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  MyThemeData.textColorDark),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  MyThemeData.primaryColor)),
+                          child: Row(
+                            children: [
+                              Text("Vaciar Lista"),
+                              SizedBox(width: 5),
+                              Icon(Icons.delete_outline),
+                            ],
+                          ))
+                    ],
+                  )
+                : SizedBox.shrink(),
+          ),
+          Expanded(
+            child: AnimatedList(
+              key: _myListKey,
+              initialItemCount: lista.items.length,
+              itemBuilder:
+                  (BuildContext context, int i, Animation<double> animation) {
+                return SizeTransition(
+                  sizeFactor: Tween<double>(
+                    begin: 0,
+                    end: 1,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Interval(0.2, 1),
+                    ),
+                  ),
+                  child: ItemListTile(
+                    item: lista.items[i],
+                    index: i,
+                    onCheck: onCheck,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // Widget buildSliverList(Lista lista, Function onCheck) {
@@ -214,8 +358,9 @@ class SliverMultilineAppBar extends StatelessWidget {
     // }
 
     return SliverAppBar(
+      // backgroundColor: Colors.white,
       expandedHeight: 120.0,
-      floating: true,
+      floating: false,
       pinned: true,
       leading: leading,
       actions: actions,
@@ -223,14 +368,14 @@ class SliverMultilineAppBar extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: false,
         title: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: availableWidth,
-          ),
-          child: Text(
-            title,
-            textScaleFactor: .8,
-          ),
-        ),
+            constraints: BoxConstraints(
+              maxWidth: availableWidth,
+            ),
+            child: Text(
+              title,
+              textScaleFactor: .8,
+              style: MyThemeData.h3Light,
+            )),
       ),
     );
   }

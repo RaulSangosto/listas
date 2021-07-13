@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:listas/controller/theme_data.dart';
 import 'package:listas/pages/home/home_page.dart';
 import 'package:listas/pages/item/item_add_page.dart';
 import 'package:listas/pages/lista/lista_add_page.dart';
@@ -21,8 +22,8 @@ class ScreenListaArguments {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  static final String title = 'Listas App';
   // final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
+  final String title = "Listas App";
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +39,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: title,
       theme: ThemeData(
-        primarySwatch: Colors.green,
-        scaffoldBackgroundColor: Color(0xFFf6f5ee),
+        primarySwatch: MyThemeData.primarySwatch,
+        primaryColor: MyThemeData.primaryColor,
+        scaffoldBackgroundColor: MyThemeData.bgColor,
       ),
       home: HomePage(),
       // home: FutureBuilder(

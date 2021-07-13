@@ -150,7 +150,15 @@ class Lista {
   }
 
   void addItem(Item item) {
-    items.add(item);
+    items.insert(0, item);
+  }
+
+  void removeItemAt(int index) {
+    items.removeAt(index);
+  }
+
+  void clearItems() {
+    items.clear();
   }
 
   Item getItemArticulo(Articulo articulo) {
