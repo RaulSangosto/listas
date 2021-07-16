@@ -37,21 +37,42 @@ class _ListasPageState extends State<ListasPage> {
     var listas = listaController.listas;
     return Padding(
       padding: EdgeInsets.all(10),
-      child: Obx(
-        () => GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, crossAxisSpacing: 5, mainAxisSpacing: 7),
-          itemCount: listas.length + 1,
-          itemBuilder: (BuildContext ctx, index) {
-            if (index >= listas.length) {
-              return AddGridListaItem();
-            } else {
-              return GridListaItem(
-                listaId: listas[index].id,
-              );
-            }
-          },
-        ),
+      child: Column(
+        children: [
+          Card(
+            color: MyThemeData.primaryColor,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            child: ListTile(
+              title: Text(
+                "Esto es un Banner",
+                style: MyThemeData.lightText,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Expanded(
+            child: Obx(
+              () => GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, crossAxisSpacing: 5, mainAxisSpacing: 7),
+                itemCount: listas.length + 1,
+                itemBuilder: (BuildContext ctx, index) {
+                  if (index >= listas.length) {
+                    return AddGridListaItem();
+                  } else {
+                    return GridListaItem(
+                      listaId: listas[index].id,
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
